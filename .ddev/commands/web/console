@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+## Description: Runs symfony's console with the current project
+## Usage: console
+## Example: "ddev console"
+
+bin/console "$@"
