@@ -25,20 +25,14 @@ class Model implements EntityInterface
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private Brand $brand;
 
-    #[ManyToOne(targetEntity: Car::class)]
-    #[JoinColumn(referencedColumnName: 'id', nullable: true)]
-    private ?Car $car;
-
     public function __construct(
         string $name,
         Brand $brand,
-        Car $car,
     ) {
         $this->uuid = Uuid::v6();
         $this
             ->setName($name)
             ->setBrand($brand)
-            ->setCar($car)
         ;
     }
 
@@ -61,17 +55,6 @@ class Model implements EntityInterface
     public function setBrand(Brand $brand): self
     {
         $this->brand = $brand;
-        return $this;
-    }
-
-    public function getCar(): ?Car
-    {
-        return $this->car;
-    }
-
-    public function setCar(?Car $car): self
-    {
-        $this->car = $car;
         return $this;
     }
 }
