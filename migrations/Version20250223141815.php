@@ -10,18 +10,17 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250223135402 extends AbstractMigration
+final class Version20250223141815 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add name to entities where relevant.';
     }
 
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE brand ADD name VARCHAR(100) NOT NULL');
-        $this->addSql('ALTER TABLE car ADD name VARCHAR(100) NOT NULL');
         $this->addSql('ALTER TABLE customer DROP FOREIGN KEY FK_81398E09C3C6F69F');
         $this->addSql('DROP INDEX IDX_81398E09C3C6F69F ON customer');
         $this->addSql('ALTER TABLE customer ADD name VARCHAR(100) NOT NULL, DROP car_id');
@@ -38,7 +37,6 @@ final class Version20250223135402 extends AbstractMigration
         $this->addSql('ALTER TABLE brand DROP name');
         $this->addSql('ALTER TABLE engineer DROP name');
         $this->addSql('ALTER TABLE spare_part DROP name');
-        $this->addSql('ALTER TABLE car DROP name');
         $this->addSql('ALTER TABLE customer ADD car_id INT NOT NULL, DROP name');
         $this->addSql('ALTER TABLE customer ADD CONSTRAINT FK_81398E09C3C6F69F FOREIGN KEY (car_id) REFERENCES car (id)');
         $this->addSql('CREATE INDEX IDX_81398E09C3C6F69F ON customer (car_id)');

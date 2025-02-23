@@ -7,11 +7,15 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private readonly CustomerCarFixtures $customerCarFixtures,
+        private readonly ModelFixtures       $modelFixtures,
+    ){}
+
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
-
+        $this->modelFixtures->loadModelFixtures($manager);
+        $this->customerCarFixtures->loadCustomerCarFixtures($manager);
         $manager->flush();
     }
 }

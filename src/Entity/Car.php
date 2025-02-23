@@ -21,9 +21,6 @@ class Car implements EntityInterface
 {
     use IdentifiableEntity;
 
-    #[Column(type: Types::STRING, length: 100, nullable: false)]
-    private string $name;
-
     #[ManyToOne(targetEntity: Customer::class)]
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private Customer $customer;
@@ -40,28 +37,15 @@ class Car implements EntityInterface
     private Collection $scheduledMaintenanceJobs;
 
     public function __construct(
-        string $name,
         Customer $customer,
         Model $model,
     ) {
         $this->uuid = Uuid::v6();
         $this->scheduledMaintenanceJobs = new ArrayCollection();
         $this
-            ->setName($name)
             ->setCustomer($customer)
             ->setModel($model)
         ;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
     }
 
     public function getCustomer(): Customer

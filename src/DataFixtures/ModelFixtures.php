@@ -4,10 +4,9 @@ namespace App\DataFixtures;
 
 use App\Factory\BrandFactory;
 use App\Factory\ModelFactory;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class ModelFixtures extends Fixture
+readonly class ModelFixtures
 {
     private const BRANDS = [
         ['name' => 'Citroën', 'models' =>
@@ -24,7 +23,7 @@ class ModelFixtures extends Fixture
         ],
     ];
 
-    public function load(ObjectManager $manager): void
+    public function loadModelFixtures(ObjectManager $manager): void
     {
         foreach (self::BRANDS as $brand) {
             $newBrand = BrandFactory::createOne([
