@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\ModelRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -16,6 +18,9 @@ class Model implements EntityInterface
 {
     use IdentifiableEntity;
 
+    #[Column(type: Types::STRING, length: 100, nullable: false)]
+    private string $name;
+
     #[ManyToOne(targetEntity: Brand::class)]
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private Brand $brand;
@@ -25,14 +30,27 @@ class Model implements EntityInterface
     private ?Car $car;
 
     public function __construct(
+        string $name,
         Brand $brand,
         Car $car,
     ) {
         $this->uuid = Uuid::v6();
         $this
+            ->setName($name)
             ->setBrand($brand)
             ->setCar($car)
         ;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function getBrand(): Brand

@@ -8,6 +8,8 @@ use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\SparePartRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -17,6 +19,9 @@ use Symfony\Component\Uid\Uuid;
 class SparePart implements EntityInterface
 {
     use IdentifiableEntity;
+
+    #[Column(type: Types::STRING, length: 100, nullable: false)]
+    private string $name;
 
     /**
      * @var Collection<int, MaintenanceJob>
@@ -32,10 +37,26 @@ class SparePart implements EntityInterface
     #[JoinColumn(referencedColumnName: 'id', nullable: true)]
     private Collection $brands;
 
-    public function __construct() {
+    public function __construct(
+        string $name,
+    ) {
         $this->uuid = Uuid::v6();
         $this->maintenanceJobs = new ArrayCollection();
         $this->brands = new ArrayCollection();
+        $this
+            ->setName($name)
+        ;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**

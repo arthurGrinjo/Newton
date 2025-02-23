@@ -8,6 +8,8 @@ use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -18,6 +20,9 @@ use Symfony\Component\Uid\Uuid;
 class Car implements EntityInterface
 {
     use IdentifiableEntity;
+
+    #[Column(type: Types::STRING, length: 100, nullable: false)]
+    private string $name;
 
     #[ManyToOne(targetEntity: Customer::class)]
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
@@ -35,15 +40,28 @@ class Car implements EntityInterface
     private Collection $scheduledMaintenanceJobs;
 
     public function __construct(
+        string $name,
         Customer $customer,
         Model $model,
     ) {
         $this->uuid = Uuid::v6();
         $this->scheduledMaintenanceJobs = new ArrayCollection();
         $this
+            ->setName($name)
             ->setCustomer($customer)
             ->setModel($model)
         ;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
     }
 
     public function getCustomer(): Customer
