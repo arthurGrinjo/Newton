@@ -16,6 +16,9 @@ final class ModelFactory extends PersistentProxyObjectFactory
         return Model::class;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function defaults(): array
     {
         return [
