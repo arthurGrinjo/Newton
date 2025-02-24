@@ -6,11 +6,8 @@ namespace App\Entity;
 
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\ScheduledMaintenanceJobRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\Uid\Uuid;
 
@@ -31,24 +28,22 @@ class ScheduledMaintenanceJob implements EntityInterface
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private TimeSlot $timeSlot;
 
-    /**
-     * @var Collection<int, Car>
-     */
-    #[ManyToMany(targetEntity: Car::class)]
+    #[ManyToOne(targetEntity: Car::class)]
     #[JoinColumn(referencedColumnName: 'id', nullable: true)]
-    private Collection $cars;
+    private Car $car;
 
     public function __construct(
         Engineer $engineer,
         TimeSlot $timeSlot,
         MaintenanceJob $maintenanceJob,
+        Car $car,
     ) {
         $this->uuid = Uuid::v6();
-        $this->cars = new ArrayCollection();
         $this
             ->setEngineer($engineer)
             ->setTimeSlot($timeSlot)
             ->setMaintenanceJob($maintenanceJob)
+            ->setCar($car)
         ;
     }
 
@@ -85,28 +80,14 @@ class ScheduledMaintenanceJob implements EntityInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Car>
-     */
-    public function getCars(): Collection
+    public function getCar(): Car
     {
-        return $this->cars;
+        return $this->car;
     }
 
-    public function setCars(Car ...$cars): self
+    public function setCar(Car $car): self
     {
-        $this->cars = new ArrayCollection();
-        foreach ($cars as $car) {
-            $this->addCar($car);
-        }
-        return $this;
-    }
-
-    public function addCar(Car $car): self
-    {
-        if ($this->cars->contains($car) === false) {
-            $this->cars->add($car);
-        }
+        $this->car = $car;
         return $this;
     }
 }

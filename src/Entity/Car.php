@@ -8,12 +8,10 @@ use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\CarRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: CarRepository::class)]
@@ -32,7 +30,7 @@ class Car implements EntityInterface
     /**
      * @var Collection<int, ScheduledMaintenanceJob>
      */
-    #[ManyToMany(targetEntity: ScheduledMaintenanceJob::class)]
+    #[OneToMany(targetEntity: ScheduledMaintenanceJob::class, mappedBy: 'car')]
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private Collection $scheduledMaintenanceJobs;
 
@@ -92,6 +90,12 @@ class Car implements EntityInterface
         if ($this->scheduledMaintenanceJobs->contains($scheduledMaintenanceJob) === false) {
             $this->scheduledMaintenanceJobs->add($scheduledMaintenanceJob);
         }
+        return $this;
+    }
+
+    public function removeScheduledMaintenanceJob(ScheduledMaintenanceJob $scheduledMaintenanceJob): self
+    {
+        $this->scheduledMaintenanceJobs->removeElement($scheduledMaintenanceJob);
         return $this;
     }
 }
