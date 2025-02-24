@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\Customer;
@@ -7,7 +9,6 @@ use App\Factory\CarFactory;
 use App\Factory\CustomerFactory;
 use App\Factory\ModelFactory;
 use App\Repository\CustomerRepository;
-use Doctrine\Persistence\ObjectManager;
 
 readonly class CustomerCarFixtures
 {

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Factory\BrandFactory;
 use App\Factory\ModelFactory;
-use Doctrine\Persistence\ObjectManager;
 
 readonly class ModelFixtures
 {
