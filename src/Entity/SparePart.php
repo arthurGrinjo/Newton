@@ -23,6 +23,10 @@ class SparePart implements EntityInterface
     #[Column(type: Types::STRING, length: 100, nullable: false)]
     private string $name;
 
+    // price in cents
+    #[Column(type: Types::INTEGER, nullable: false)]
+    private int $price;
+
     /**
      * @var Collection<int, Brand>
      */
@@ -32,11 +36,13 @@ class SparePart implements EntityInterface
 
     public function __construct(
         string $name,
+        int $price,
     ) {
         $this->uuid = Uuid::v6();
         $this->brands = new ArrayCollection();
         $this
             ->setName($name)
+            ->setPrice($price)
         ;
     }
 
@@ -48,6 +54,17 @@ class SparePart implements EntityInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getPrice(): int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
         return $this;
     }
 

@@ -24,6 +24,10 @@ class MaintenanceJob implements EntityInterface
     #[Column(type: Types::STRING, length: 100, nullable: false)]
     private string $task;
 
+    // time in quarters
+    #[Column(type: Types::INTEGER, nullable: false)]
+    private int $duration;
+
     /**
      * @var Collection<int, ScheduledMaintenanceJob>
      */
@@ -40,12 +44,14 @@ class MaintenanceJob implements EntityInterface
 
     public function __construct(
         string $task,
+        int $duration,
     ) {
         $this->uuid = Uuid::v6();
         $this->scheduledMaintenanceJobs = new ArrayCollection();
         $this->spareParts = new ArrayCollection();
         $this
             ->setTask($task)
+            ->setDuration($duration)
         ;
     }
 
@@ -57,6 +63,17 @@ class MaintenanceJob implements EntityInterface
     public function setTask(string $task): self
     {
         $this->task = $task;
+        return $this;
+    }
+
+    public function getDuration(): int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): self
+    {
+        $this->duration = $duration;
         return $this;
     }
 
@@ -97,7 +114,10 @@ class MaintenanceJob implements EntityInterface
         return $this->spareParts;
     }
 
-    public function setSpareParts(SparePart ...$spareParts): self
+    /**
+     * @param array<SparePart> $spareParts
+     */
+    public function setSpareParts(array $spareParts): self
     {
         $this->spareParts = new ArrayCollection();
         foreach ($spareParts as $sparePart) {
