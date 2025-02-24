@@ -15,7 +15,7 @@ readonly class CustomerCarFixtures
         private CustomerRepository $customerRepository,
     ){}
 
-    public function loadCustomerCarFixtures(?int $number = 20): void
+    public function loadCustomerCarFixtures(int $number = 20): void
     {
         CustomerFactory::createMany($number);
 
