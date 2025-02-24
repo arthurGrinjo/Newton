@@ -24,13 +24,6 @@ class SparePart implements EntityInterface
     private string $name;
 
     /**
-     * @var Collection<int, MaintenanceJob>
-     */
-    #[ManyToMany(targetEntity: MaintenanceJob::class)]
-    #[JoinColumn(referencedColumnName: 'id', nullable: true)]
-    private Collection $maintenanceJobs;
-
-    /**
      * @var Collection<int, Brand>
      */
     #[ManyToMany(targetEntity: Brand::class)]
@@ -41,7 +34,6 @@ class SparePart implements EntityInterface
         string $name,
     ) {
         $this->uuid = Uuid::v6();
-        $this->maintenanceJobs = new ArrayCollection();
         $this->brands = new ArrayCollection();
         $this
             ->setName($name)
@@ -56,31 +48,6 @@ class SparePart implements EntityInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MaintenanceJob>
-     */
-    public function getMaintenanceJobs(): Collection
-    {
-        return $this->maintenanceJobs;
-    }
-
-    public function setMaintenanceJobs(MaintenanceJob ...$maintenanceJobs): self
-    {
-        $this->maintenanceJobs = new ArrayCollection();
-        foreach ($maintenanceJobs as $maintenanceJob) {
-            $this->addMaintenanceJob($maintenanceJob);
-        }
-        return $this;
-    }
-
-    public function addMaintenanceJob(MaintenanceJob $maintenanceJob): self
-    {
-        if ($this->maintenanceJobs->contains($maintenanceJob) === false) {
-            $this->maintenanceJobs->add($maintenanceJob);
-        }
         return $this;
     }
 
