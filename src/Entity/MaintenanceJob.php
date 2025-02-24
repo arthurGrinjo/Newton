@@ -8,6 +8,8 @@ use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\MaintenanceJobRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
@@ -18,6 +20,9 @@ use Symfony\Component\Uid\Uuid;
 class MaintenanceJob implements EntityInterface
 {
     use IdentifiableEntity;
+
+    #[Column(type: Types::STRING, length: 100, nullable: false)]
+    private string $task;
 
     /**
      * @var Collection<int, ScheduledMaintenanceJob>
@@ -33,10 +38,26 @@ class MaintenanceJob implements EntityInterface
     #[JoinColumn(referencedColumnName: 'id', nullable: true)]
     private Collection $spareParts;
 
-    public function __construct() {
+    public function __construct(
+        string $task,
+    ) {
         $this->uuid = Uuid::v6();
         $this->scheduledMaintenanceJobs = new ArrayCollection();
         $this->spareParts = new ArrayCollection();
+        $this
+            ->setTask($task)
+        ;
+    }
+
+    public function getTask(): string
+    {
+        return $this->task;
+    }
+
+    public function setTask(string $task): self
+    {
+        $this->task = $task;
+        return $this;
     }
 
     /**
