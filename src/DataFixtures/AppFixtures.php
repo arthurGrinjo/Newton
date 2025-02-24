@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\EngineerFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -16,6 +17,8 @@ class AppFixtures extends Fixture
     {
         $this->modelFixtures->loadModelFixtures();
         $this->customerCarFixtures->loadCustomerCarFixtures(number: 50);
+        EngineerFactory::createMany(5);
+        
         $manager->flush();
     }
 }
