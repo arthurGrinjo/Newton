@@ -14,8 +14,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $this->modelFixtures->loadModelFixtures($manager);
-        $this->customerCarFixtures->loadCustomerCarFixtures($manager);
+        $this->modelFixtures->loadModelFixtures();
+        $this->customerCarFixtures->loadCustomerCarFixtures(number: 50);
         $manager->flush();
     }
 }

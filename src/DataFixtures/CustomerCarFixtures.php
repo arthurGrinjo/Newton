@@ -15,9 +15,9 @@ readonly class CustomerCarFixtures
         private CustomerRepository $customerRepository,
     ){}
 
-    public function loadCustomerCarFixtures(ObjectManager $manager): void
+    public function loadCustomerCarFixtures(?int $number = 20): void
     {
-        CustomerFactory::createMany(20);
+        CustomerFactory::createMany($number);
 
         $customers = $this->customerRepository->findAll();
 

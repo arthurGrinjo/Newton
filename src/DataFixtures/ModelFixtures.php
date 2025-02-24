@@ -23,7 +23,7 @@ readonly class ModelFixtures
         ],
     ];
 
-    public function loadModelFixtures(ObjectManager $manager): void
+    public function loadModelFixtures(): void
     {
         foreach (self::BRANDS as $brand) {
             $newBrand = BrandFactory::createOne([
