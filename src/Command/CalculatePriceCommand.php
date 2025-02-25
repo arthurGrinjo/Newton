@@ -23,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'newton:jobs:calculate-price',
-    description: 'Generate fixtures for scheduled jobs.',
+    description: 'Get Price overview for MaintenanceJobs per Customer per Job',
 )]
 class CalculatePriceCommand extends Command
 {

@@ -36,6 +36,11 @@ Jobs are planned sequentially and add 15 minutes to each job to start/stop
 ~/Newton$ ddev console newton:jobs:load
 ```
 
+Get Price overview for MaintenanceJobs per Job per Customer
+```
+~/Newton$ ddev console newton:jobs:calculate-price
+```
+
 
 # Assumptions
 - Newton is opened from Tuesday - Saturday
