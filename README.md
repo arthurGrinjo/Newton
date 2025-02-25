@@ -30,8 +30,9 @@ Newton
 ```
 
 ## Commands
+Generate amount of Scheduled Maintenance Jobs (max 100 per time)
 ```
-~/Newton$ ddev console newton:jobs:load - To generate amount of Scheduled Maintenance Jobs.
+~/Newton$ ddev console newton:jobs:load
 ```
 
 
