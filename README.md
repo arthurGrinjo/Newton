@@ -19,11 +19,27 @@ You'll end up with the following directory structure:
 ```
 Newton
 └─ .ddev
+└─ Symfony - project folders
 ```
 
 ## DDEV
 ```
 ~/Newton$ ddev start
-~/Newton$ ddev describe
-~/Newton$ ddev xdebug on
+~/Newton$ ddev console doctrine:migrations:migrate (d:m:m)
+~/Newton$ ddev console doctrine:fixtures:load (d:f:l)
 ```
+
+## Commands
+```
+~/Newton$ ddev start
+~/Newton$ ddev console doctrine:migrations:migrate (d:m:m)
+~/Newton$ ddev console doctrine:fixtures:load (d:f:l)
+~/Newton$ ddev console newton:jobs:load - To generate amount of Scheduled Maintenance Jobs.
+```
+
+
+# Assumptions
+- Newton is opened from Tuesday - Saturday
+- Each task takes a certain amount of quarters (15 min)
+- Every engineer works 8 hours (32 quarters) a day
+- Each timeslot describes the startday, starting quarter and ending quarter and can be ordered by the starting quarter
