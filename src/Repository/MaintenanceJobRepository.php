@@ -24,4 +24,13 @@ class MaintenanceJobRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MaintenanceJob::class);
     }
+
+    public function getRandomJob(): ?MaintenanceJob
+    {
+        $jobs = $this->findAll();
+
+        return (count($jobs) > 0)
+            ? $jobs[random_int(0, count($jobs)-1)]
+            : null;
+    }
 }

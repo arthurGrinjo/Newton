@@ -6,57 +6,80 @@ namespace App\Entity;
 
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\TimeSlotRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * TimeSlot is measured in quarters. There are 8h * 4 = 32 quarters per day.
+ * There is no start and end-time, but the number gives an approximate time
+ * from the moment the engineer starts his day.
+ */
 #[Entity(repositoryClass: TimeSlotRepository::class)]
 class TimeSlot implements EntityInterface
 {
     use IdentifiableEntity;
 
-    /**
-     * @var Collection<int, ScheduledMaintenanceJob>
-     */
-    #[OneToMany(targetEntity: ScheduledMaintenanceJob::class, mappedBy: 'timeslot')]
-    #[JoinColumn(referencedColumnName: 'id', nullable: true)]
-    private Collection $scheduledMaintenanceJobs;
+    #[Column(type: Types::DATE_IMMUTABLE)]
+    private DateTimeImmutable $date;
 
-    public function __construct()
+    #[Column(type: Types::INTEGER, length: 2, nullable: false)]
+    private int $start;
+
+    #[Column(type: Types::INTEGER, length: 2, nullable: false)]
+    private int $end;
+
+    public function __construct(
+        DateTimeImmutable $date,
+        int $start,
+        int $end,
+    )
     {
         $this->uuid = Uuid::v6();
-        $this->scheduledMaintenanceJobs = new ArrayCollection();
+        $this
+            ->setDate($date)
+            ->setStart($start)
+            ->setEnd($end)
+        ;
     }
 
-    /**
-     * @return Collection<int, ScheduledMaintenanceJob>
-     */
-    public function getScheduledMaintenanceJobs(): Collection
+    public function getDate(): DateTimeImmutable
     {
-        return $this->scheduledMaintenanceJobs;
+        return $this->date;
     }
 
-    public function setScheduledMaintenanceJobs(ScheduledMaintenanceJob ...$scheduledMaintenanceJobs): self
+    public function setDate(DateTimeImmutable $date): self
     {
-        $this->scheduledMaintenanceJobs = new ArrayCollection();
-        foreach ($scheduledMaintenanceJobs as $scheduledMaintenanceJob) {
-            $this->addScheduledMaintenanceJob($scheduledMaintenanceJob);
-        }
+        $this->date = $date;
         return $this;
     }
 
-    public function addScheduledMaintenanceJob(ScheduledMaintenanceJob $scheduledMaintenanceJob): self
+    public function getStart(): int
     {
-        $this->scheduledMaintenanceJobs->add($scheduledMaintenanceJob);
+        return $this->start;
+    }
+
+    public function setStart(int $start): self
+    {
+        $this->start = $start;
         return $this;
     }
 
-    public function removeScheduledMaintenanceJob(ScheduledMaintenanceJob $scheduledMaintenanceJob): self
+    public function getEnd(): int
     {
-        $this->scheduledMaintenanceJobs->removeElement($scheduledMaintenanceJob);
+        return $this->end;
+    }
+
+    public function setEnd(int $end): self
+    {
+        $this->end = $end;
         return $this;
+    }
+
+    public function getDuration(): int
+    {
+        return (int) $this->getEnd() - $this->getStart();
     }
 }

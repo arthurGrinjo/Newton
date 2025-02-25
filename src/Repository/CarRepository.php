@@ -24,4 +24,13 @@ class CarRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Car::class);
     }
+
+    public function getRandomCar(): ?Car
+    {
+        $cars = $this->findAll();
+
+        return (count($cars) > 0)
+            ? $cars[random_int(0, count($cars)-1)]
+            : null;
+    }
 }

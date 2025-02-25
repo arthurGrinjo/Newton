@@ -20,7 +20,7 @@ class ScheduledMaintenanceJob implements EntityInterface
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private Engineer $engineer;
 
-    #[ManyToOne(targetEntity: MaintenanceJob::class)]
+    #[ManyToOne(targetEntity: MaintenanceJob::class, cascade: ['persist'])]
     #[JoinColumn(referencedColumnName: 'id', nullable: false)]
     private MaintenanceJob $maintenanceJob;
 
