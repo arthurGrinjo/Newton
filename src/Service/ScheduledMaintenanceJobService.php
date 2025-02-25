@@ -11,10 +11,10 @@ use App\Entity\ScheduledMaintenanceJob;
 use App\Entity\TimeSlot;
 use App\Repository\EngineerRepository;
 use App\Repository\ScheduledMaintenanceJobRepository;
-use App\Repository\SparePartRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 readonly class ScheduledMaintenanceJobService
 {
@@ -26,7 +26,6 @@ readonly class ScheduledMaintenanceJobService
         private EngineerRepository $engineerRepository,
         private EntityManagerInterface $manager,
         private ScheduledMaintenanceJobRepository $scheduledMaintenanceJobRepository,
-        private SparePartRepository $sparePartRepository,
     ) {}
 
     public function createScheduledMaintenanceJob(
@@ -52,7 +51,12 @@ readonly class ScheduledMaintenanceJobService
         /**
          * - plan for engineer who is the first without a job
          */
-        $engineer = $this->getEngineer(scheduledJobs: $scheduledJobs, engineers: $engineers);
+        try {
+            $engineer = $this->getEngineer(scheduledJobs: $scheduledJobs, engineers: $engineers);
+        } catch (Exception) {
+            /** todo: log error */
+            return;
+        }
 
         /**
          * - every job takes 15 minutes to start/stop
@@ -104,13 +108,12 @@ readonly class ScheduledMaintenanceJobService
     public function getInvoiceForScheduledMaintenanceJob(
         ScheduledMaintenanceJob $scheduledMaintenanceJob,
     ): array {
-            $sparePartPrice = ($scheduledMaintenanceJob->getMaintenanceJob()->getSpareParts()->count() > 0)
-                ? $this->sparePartRepository->getSparePartPrice(
-                    sparePart: $scheduledMaintenanceJob->getMaintenanceJob()->getSpareParts()->first(),
-                    car: $scheduledMaintenanceJob->getCar()
-                )
-                : 0
-            ;
+        $sparePartPrice = 0;
+        foreach ($scheduledMaintenanceJob->getMaintenanceJob()->getSpareParts() as $sparePart) {
+            if ($sparePart->getBrand() === $scheduledMaintenanceJob->getCar()->getModel()->getBrand()) {
+                $sparePartPrice += $sparePart->getPrice();
+            }
+        }
 
         /** todo: implement weekend tarif of 150% */
         $workingHoursPrice = $scheduledMaintenanceJob->getTimeSlot()->getDuration() * self::PRICE_PER_HOUR / 4;
@@ -132,6 +135,7 @@ readonly class ScheduledMaintenanceJobService
     /**
      * @param array<int, array{id: int, date: DateTimeImmutable, start: int, end: int}> $scheduledJobs ,
      * @param array<int, Engineer> $engineers
+     * @throws Exception
      */
     private function getEngineer(
         array $scheduledJobs,
@@ -145,7 +149,9 @@ readonly class ScheduledMaintenanceJobService
         }
 
         $latest = array_pop($scheduledJobs);
-        return $engineers[$latest['id']];
+        return ($latest)
+            ? $engineers[$latest['id']]
+            : throw new Exception('No engineer found.');
     }
 
     private function getScheduleFrom(): DateTimeImmutable
