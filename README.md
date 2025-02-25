@@ -31,9 +31,6 @@ Newton
 
 ## Commands
 ```
-~/Newton$ ddev start
-~/Newton$ ddev console doctrine:migrations:migrate (d:m:m)
-~/Newton$ ddev console doctrine:fixtures:load (d:f:l)
 ~/Newton$ ddev console newton:jobs:load - To generate amount of Scheduled Maintenance Jobs.
 ```
 
