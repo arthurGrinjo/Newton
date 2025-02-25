@@ -47,3 +47,4 @@ Get Price overview for MaintenanceJobs per Customer per Job
 - Each task takes a certain amount of quarters (15 min)
 - Every engineer works 8 hours (32 quarters) a day
 - Each timeslot describes the startday, starting quarter and ending quarter and can be ordered by the starting quarter
+- For now, one maintenanceJob per scheduledMaintenanceJob
