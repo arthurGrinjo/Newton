@@ -24,4 +24,24 @@ class CustomerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Customer::class);
     }
+
+    /**
+     * @return array<int, Customer>
+     */
+    public function findCustomerByName(string $search): array
+    {
+        $alias = 'customer';
+
+        $queryBuilder = $this->createQueryBuilder($alias);
+        $queryBuilder
+            ->select()
+            ->where(
+                $queryBuilder->expr()->like(sprintf('%s.name', $alias), ':search')
+            )
+            ->setParameter('search', sprintf('%%%s%%', $search))
+            ->setMaxResults(5)
+        ;
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

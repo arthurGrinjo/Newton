@@ -11,17 +11,22 @@ use App\Entity\ScheduledMaintenanceJob;
 use App\Entity\TimeSlot;
 use App\Repository\EngineerRepository;
 use App\Repository\ScheduledMaintenanceJobRepository;
+use App\Repository\SparePartRepository;
 use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 
 readonly class ScheduledMaintenanceJobService
 {
+    const PRICE_PER_HOUR = 10000;
+    const VAT = 21;
+    const WEEKEND_TARIF = 150;
+
     public function __construct(
         private EngineerRepository $engineerRepository,
         private EntityManagerInterface $manager,
         private ScheduledMaintenanceJobRepository $scheduledMaintenanceJobRepository,
+        private SparePartRepository $sparePartRepository,
     ) {}
 
     public function createScheduledMaintenanceJob(
@@ -93,11 +98,36 @@ readonly class ScheduledMaintenanceJobService
         $this->manager->flush();
     }
 
-//    public function getInvoiceForScheduledMaintenanceJob(
-//
-//    ): int {
-//        $this->scheduledMaintenanceJobRepository->get
-//    }
+    /**
+     * @return array{task: string, date: string, working_hours: string, spare_part_price: float, price: float, vat: float, total_price: float}
+     */
+    public function getInvoiceForScheduledMaintenanceJob(
+        ScheduledMaintenanceJob $scheduledMaintenanceJob,
+    ): array {
+            $sparePartPrice = ($scheduledMaintenanceJob->getMaintenanceJob()->getSpareParts()->count() > 0)
+                ? $this->sparePartRepository->getSparePartPrice(
+                    sparePart: $scheduledMaintenanceJob->getMaintenanceJob()->getSpareParts()->first(),
+                    car: $scheduledMaintenanceJob->getCar()
+                )
+                : 0
+            ;
+
+        /** todo: implement weekend tarif of 150% */
+        $workingHoursPrice = $scheduledMaintenanceJob->getTimeSlot()->getDuration() * self::PRICE_PER_HOUR / 4;
+
+        $totalPrice = $sparePartPrice + $workingHoursPrice;
+        $vat = $totalPrice * self::VAT / 100;
+
+        return [
+            'task' => $scheduledMaintenanceJob->getMaintenanceJob()->getTask(),
+            'date' => $scheduledMaintenanceJob->getTimeSlot()->getDate()->format('Y-m-d'),
+            'working_hours' => sprintf('%sh', $scheduledMaintenanceJob->getTimeSlot()->getDuration() / 4),
+            'spare_part_price' => $sparePartPrice / 100,
+            'price' => $totalPrice / 100,
+            'vat' => $vat / 100,
+            'total_price' => ($totalPrice + $vat) / 100,
+        ];
+    }
 
     /**
      * @param array<int, array{id: int, date: DateTimeImmutable, start: int, end: int}> $scheduledJobs ,
