@@ -55,16 +55,14 @@ readonly class MaintenanceJobFixtures
                 foreach ($brands as $brand) {
                     $sparePart = SparePartFactory::createOne([
                         'name' => $maintenanceJob['sparepart']['name'],
-                        'price' => $this->generatePrice($maintenanceJob['sparepart']['price'])
+                        'price' => $this->generatePrice($maintenanceJob['sparepart']['price']),
+                        'brand' => $brand,
                     ]);
-
                     $spareParts[] = $sparePart;
-                    $sparePart->addBrand($brand);
                 }
             }
 
-
-            $job = MaintenanceJobFactory::createOne([
+            MaintenanceJobFactory::createOne([
                 'task' => $maintenanceJob['task'],
                 'duration' => $maintenanceJob['duration'],
                 'spareparts' => $spareParts

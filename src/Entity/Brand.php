@@ -7,9 +7,12 @@ namespace App\Entity;
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: BrandRepository::class)]

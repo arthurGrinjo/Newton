@@ -6,13 +6,11 @@ namespace App\Entity;
 
 use App\Entity\Trait\IdentifiableEntity;
 use App\Repository\SparePartRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\Uid\Uuid;
 
 #[Entity(repositoryClass: SparePartRepository::class)]
@@ -27,22 +25,20 @@ class SparePart implements EntityInterface
     #[Column(type: Types::INTEGER, nullable: false)]
     private int $price;
 
-    /**
-     * @var Collection<int, Brand>
-     */
-    #[ManyToMany(targetEntity: Brand::class)]
-    #[JoinColumn(referencedColumnName: 'id', nullable: true)]
-    private Collection $brands;
+    #[ManyToOne(targetEntity: Brand::class, cascade: ['persist'], inversedBy: 'spare_parts')]
+    #[JoinColumn(referencedColumnName: 'id', nullable: false)]
+    private Brand $brand;
 
     public function __construct(
         string $name,
         int $price,
+        Brand $brand
     ) {
         $this->uuid = Uuid::v6();
-        $this->brands = new ArrayCollection();
         $this
             ->setName($name)
             ->setPrice($price)
+            ->setBrand($brand)
         ;
     }
 
@@ -68,28 +64,14 @@ class SparePart implements EntityInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Brand>
-     */
-    public function getBrands(): Collection
+    public function getBrand(): Brand
     {
-        return $this->brands;
+        return $this->brand;
     }
 
-    public function setBrands(Brand ...$brands): self
+    public function setBrand(Brand $brand): SparePart
     {
-        $this->brands = new ArrayCollection();
-        foreach ($brands as $brand) {
-            $this->addBrand($brand);
-        }
-        return $this;
-    }
-
-    public function addBrand(Brand $brand): self
-    {
-        if ($this->brands->contains($brand) === false) {
-            $this->brands->add($brand);
-        }
+        $this->brand = $brand;
         return $this;
     }
 }

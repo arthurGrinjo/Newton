@@ -25,6 +25,7 @@ final class SparePartFactory extends PersistentProxyObjectFactory
         return [
             'name' => self::faker()->firstName(),
             'price' => self::faker()->numberBetween(10, 100000),
+            'brand' => BrandFactory::random(),
         ];
     }
 }
