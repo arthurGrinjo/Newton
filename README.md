@@ -31,6 +31,7 @@ Newton
 
 ## Commands
 Generate amount of Scheduled Maintenance Jobs (max 100 per time)
+Jobs are planned sequentially and add 15 minutes to each job to start/stop
 ```
 ~/Newton$ ddev console newton:jobs:load
 ```
